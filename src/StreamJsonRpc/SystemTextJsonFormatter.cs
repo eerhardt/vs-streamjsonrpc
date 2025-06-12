@@ -353,7 +353,14 @@ public partial class SystemTextJsonFormatter : FormatterBase, IJsonRpcMessageFor
         // Add support for exotic types.
         options.Converters.Add(new ProgressConverterFactory(this));
         options.Converters.Add(new AsyncEnumerableConverter(this));
-        options.Converters.Add(new RpcMarshalableConverterFactory(this));
+
+        // AArnott - how do you think this could be supported? In ASP.NET we added new APIs with a "Core" suffix that would cut unsafe things out
+        // I wasn't sure if RpcMarshalableConverterFactory should be fixed up, or if it shouldn't be used at all. I assume it shouldn't be used at all
+        // since it has RUC and RDC attributes on it.
+        // Another thought is to introduce a new SystemTextJsonFormatter class that only support source generator is completely AOT compatible?
+
+        // options.Converters.Add(new RpcMarshalableConverterFactory(this));
+
         options.Converters.Add(new DuplexPipeConverter(this));
         options.Converters.Add(new PipeReaderConverter(this));
         options.Converters.Add(new PipeWriterConverter(this));
@@ -863,7 +870,7 @@ public partial class SystemTextJsonFormatter : FormatterBase, IJsonRpcMessageFor
                 if (wrapper.RootElement.TryGetProperty(MessageFormatterEnumerableTracker.TokenPropertyName, out JsonElement enumToken))
                 {
                     // Copy the token so we can retain it and replay it later.
-                    handle = enumToken.Deserialize<JsonElement>();
+                    handle = enumToken.Clone();
                 }
 
                 IReadOnlyList<T>? prefetchedItems = null;

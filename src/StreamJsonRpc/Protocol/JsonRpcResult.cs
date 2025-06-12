@@ -3,7 +3,6 @@
 
 using System.Diagnostics;
 using System.Runtime.Serialization;
-using JsonNET = Newtonsoft.Json.Linq;
 using STJ = System.Text.Json.Serialization;
 
 namespace StreamJsonRpc.Protocol;
@@ -68,14 +67,14 @@ public class JsonRpcResult : JsonRpcMessage, IJsonRpcMessageWithId
     /// </remarks>
     public virtual T GetResult<T>() => (T)this.Result!;
 
-    /// <inheritdoc/>
-    public override string ToString()
-    {
-        return new JsonNET.JObject
-        {
-            new JsonNET.JProperty("id", this.RequestId.ObjectValue),
-        }.ToString(Newtonsoft.Json.Formatting.None);
-    }
+    ///// <inheritdoc/>
+    //public override string ToString()
+    //{
+    //    return new JsonNET.JObject
+    //    {
+    //        new JsonNET.JProperty("id", this.RequestId.ObjectValue),
+    //    }.ToString(Newtonsoft.Json.Formatting.None);
+    //}
 
     /// <summary>
     /// Provides a hint for a deferred deserialization of the <see cref="Result"/> value as to the type

@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using System;
 using System.Buffers;
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
@@ -528,13 +527,23 @@ public class MessageFormatterEnumerableTracker
         }
     }
 
+    /// <summary>
+    /// todo.
+    /// </summary>
+    /// <typeparam name="T">The type.</typeparam>
     [DataContract]
-    private class EnumeratorResults<T>
+    public class EnumeratorResults<T>
     {
+        /// <summary>
+        /// Gets or sets todo.
+        /// </summary>
         [DataMember(Name = ValuesPropertyName, Order = 0)]
         [STJ.JsonPropertyName(ValuesPropertyName), STJ.JsonPropertyOrder(0)]
         public IReadOnlyList<T>? Values { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether todo.
+        /// </summary>
         [DataMember(Name = FinishedPropertyName, Order = 1)]
         [STJ.JsonPropertyName(FinishedPropertyName), STJ.JsonPropertyOrder(1)]
         public bool Finished { get; set; }

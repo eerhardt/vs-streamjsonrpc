@@ -4,7 +4,6 @@
 using System.Diagnostics;
 using System.Runtime.Serialization;
 using StreamJsonRpc.Reflection;
-using JsonNET = Newtonsoft.Json.Linq;
 using STJ = System.Text.Json.Serialization;
 
 namespace StreamJsonRpc.Protocol;
@@ -48,19 +47,19 @@ public class JsonRpcError : JsonRpcMessage, IJsonRpcMessageWithId
     /// </summary>
     protected string DebuggerDisplay => $"Error: {this.Error?.Code} \"{this.Error?.Message}\" ({this.RequestId})";
 
-    /// <inheritdoc/>
-    public override string ToString()
-    {
-        return new JsonNET.JObject
-        {
-            new JsonNET.JProperty("id", this.RequestId.ObjectValue),
-            new JsonNET.JProperty("error", new JsonNET.JObject
-            {
-                new JsonNET.JProperty("code", this.Error?.Code),
-                new JsonNET.JProperty("message", this.Error?.Message),
-            }),
-        }.ToString(Newtonsoft.Json.Formatting.None);
-    }
+    ///// <inheritdoc/>
+    //public override string ToString()
+    //{
+    //    return new JsonNET.JObject
+    //    {
+    //        new JsonNET.JProperty("id", this.RequestId.ObjectValue),
+    //        new JsonNET.JProperty("error", new JsonNET.JObject
+    //        {
+    //            new JsonNET.JProperty("code", this.Error?.Code),
+    //            new JsonNET.JProperty("message", this.Error?.Message),
+    //        }),
+    //    }.ToString(Newtonsoft.Json.Formatting.None);
+    //}
 
     /// <summary>
     /// Describes the error.

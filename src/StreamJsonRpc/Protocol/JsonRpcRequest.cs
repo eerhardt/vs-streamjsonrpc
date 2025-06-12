@@ -4,7 +4,6 @@
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization;
-using JsonNET = Newtonsoft.Json.Linq;
 using STJ = System.Text.Json.Serialization;
 
 namespace StreamJsonRpc.Protocol;
@@ -282,13 +281,13 @@ public class JsonRpcRequest : JsonRpcMessage, IJsonRpcMessageWithId
         return false;
     }
 
-    /// <inheritdoc/>
-    public override string ToString()
-    {
-        return new JsonNET.JObject
-        {
-            new JsonNET.JProperty("id", this.RequestId.ObjectValue),
-            new JsonNET.JProperty("method", this.Method),
-        }.ToString(Newtonsoft.Json.Formatting.None);
-    }
+    ///// <inheritdoc/>
+    //public override string ToString()
+    //{
+    //    return new JsonNET.JObject
+    //    {
+    //        new JsonNET.JProperty("id", this.RequestId.ObjectValue),
+    //        new JsonNET.JProperty("method", this.Method),
+    //    }.ToString(Newtonsoft.Json.Formatting.None);
+    //}
 }
