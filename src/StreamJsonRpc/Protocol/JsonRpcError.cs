@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using System.Text.Json.Nodes;
 using StreamJsonRpc.Reflection;
 using STJ = System.Text.Json.Serialization;
 
@@ -47,19 +48,19 @@ public class JsonRpcError : JsonRpcMessage, IJsonRpcMessageWithId
     /// </summary>
     protected string DebuggerDisplay => $"Error: {this.Error?.Code} \"{this.Error?.Message}\" ({this.RequestId})";
 
-    ///// <inheritdoc/>
-    //public override string ToString()
-    //{
-    //    return new JsonNET.JObject
-    //    {
-    //        new JsonNET.JProperty("id", this.RequestId.ObjectValue),
-    //        new JsonNET.JProperty("error", new JsonNET.JObject
-    //        {
-    //            new JsonNET.JProperty("code", this.Error?.Code),
-    //            new JsonNET.JProperty("message", this.Error?.Message),
-    //        }),
-    //    }.ToString(Newtonsoft.Json.Formatting.None);
-    //}
+    /// <inheritdoc/>
+    public override string ToString()
+    {
+        return new JsonObject
+        {
+            ["id"] = this.RequestId.AsJsonValue(),
+            ["error"] = new JsonObject
+            {
+                ["code"] = this.Error?.Code is not null ? JsonValue.Create(this.Error?.Code) : null,
+                ["message"] = this.Error?.Message,
+            },
+        }.ToJsonString();
+    }
 
     /// <summary>
     /// Describes the error.
