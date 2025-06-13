@@ -1608,8 +1608,7 @@ public class JsonRpc : IDisposableObservable, IJsonRpcFormatterCallbacks, IJsonR
             }
             else
             {
-                //throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Resources.ResponseUnexpectedFormat, JsonConvert.SerializeObject(response)));
-                throw new InvalidOperationException("Bad response");
+                throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, Resources.ResponseUnexpectedFormat, response?.GetType().FullName ?? "(null)"));
             }
         }
         else
