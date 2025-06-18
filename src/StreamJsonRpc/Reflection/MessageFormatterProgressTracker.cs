@@ -70,8 +70,8 @@ public class MessageFormatterProgressTracker
     /// </summary>
     /// <param name="objectType">The type which may implement <see cref="IProgress{T}"/>.</param>
     /// <returns>The <see cref="IProgress{T}"/> from given <see cref="Type"/> object, or <see langword="null"/>  if no such interface was found in the given <paramref name="objectType" />.</returns>
-    public static Type? FindIProgressOfT([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type objectType)
-        => TrackerHelpers<IProgress<int>>.FindInterfaceImplementedBy(objectType);
+    public static Type? FindIProgressOfT(Type objectType)
+        => TrackerHelpers.FindIProgressInterfaceImplementedBy(objectType);
 
     /// <summary>
     /// Checks if a given <see cref="Type"/> implements <see cref="IProgress{T}"/>.
@@ -240,10 +240,7 @@ public class MessageFormatterProgressTracker
         {
             Requires.NotNull(progressObject, nameof(progressObject));
 
-            [UnconditionalSuppressMessage("Trimming", "IL2072:RequiresUnreferencedCode", Justification = "The 'IProgress<>' Type must exist and so trimmer kept it. In which case it also kept it on any type which implements it.")]
-            static Type? FindIProgress(object progressObject) => FindIProgressOfT(progressObject.GetType());
-
-            Type? iProgressOfTType = FindIProgress(progressObject);
+            Type? iProgressOfTType = FindIProgressOfT(progressObject.GetType());
 
             Verify.Operation(iProgressOfTType is not null, Resources.FindIProgressOfTError);
 

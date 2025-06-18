@@ -936,7 +936,7 @@ public class MessagePackFormatter : FormatterBase, IJsonRpcMessageFormatter, IJs
                     {
                         formatter = (IMessagePackFormatter<T>?)Activator.CreateInstance(typeof(PreciseTypeFormatter<>).MakeGenericType(typeof(T).GenericTypeArguments[0]), new object[] { this.mainFormatter });
                     }
-                    else if (TrackerHelpers<IAsyncEnumerable<int>>.FindInterfaceImplementedBy(typeof(T)) is { } iface)
+                    else if (TrackerHelpers.FindIAsyncEnumerableInterfaceImplementedBy(typeof(T)) is { } iface)
                     {
                         formatter = (IMessagePackFormatter<T>?)Activator.CreateInstance(typeof(GeneratorFormatter<,>).MakeGenericType(typeof(T), iface.GenericTypeArguments[0]), new object[] { this.mainFormatter });
                     }

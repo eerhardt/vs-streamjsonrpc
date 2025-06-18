@@ -71,3 +71,72 @@ internal static class TrackerHelpers<TInterface>
     /// <returns><see langword="true"/> if <paramref name="objectType"/> is a closed generic form of <typeparamref name="TInterface"/>; <see langword="false"/> otherwise.</returns>
     internal static bool IsActualInterfaceMatch(Type objectType) => Requires.NotNull(objectType, nameof(objectType)).IsConstructedGenericType && objectType.GetGenericTypeDefinition().Equals(InterfaceGenericTypeDefinition);
 }
+
+internal static class TrackerHelpers
+{
+    /// <summary>
+    /// Dictionary to record the calculation made in <see cref="FindIProgressInterfaceImplementedBy(Type)"/> to obtain the IProgress{T} type from a given <see cref="Type"/>.
+    /// </summary>
+    private static readonly Dictionary<Type, Type?> TypeToImplementedIProgressMap = new();
+
+    /// <summary>
+    /// Dictionary to record the calculation made in <see cref="FindIAsyncEnumerableInterfaceImplementedBy(Type)"/> to obtain the IAsyncEnumerable{T} type from a given <see cref="Type"/>.
+    /// </summary>
+    private static readonly Dictionary<Type, Type?> TypeToImplementedIAsyncEnumerableMap = new();
+
+    /// <summary>
+    /// Extracts the IProgress{T} interface from a given <see cref="Type"/>, if it is implemented.
+    /// </summary>
+    /// <param name="objectType">The type which may implement IProgress{T}.</param>
+    /// <returns>The <typeparamref name="TInterface"/> type from given <see cref="Type"/> object, or <see langword="null"/>  if no such interface was found in the given <paramref name="objectType" />.</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2070:UnrecognizedReflectionPattern", Justification = "The 'IProgress<>' Type must exist and so trimmer kept it. In which case It also kept it on any type which implements it. The below call to GetInterfaces may return fewer results when trimmed but it will return 'IProgress<>' if the type implemented it, even after trimming.")]
+    internal static Type? FindIProgressInterfaceImplementedBy(Type objectType)
+    {
+        Requires.NotNull(objectType, nameof(objectType));
+
+        if (objectType.IsConstructedGenericType && objectType.GetGenericTypeDefinition().Equals(typeof(IProgress<>)))
+        {
+            return objectType;
+        }
+
+        Type? interfaceFromType;
+        lock (TypeToImplementedIProgressMap)
+        {
+            if (!TypeToImplementedIProgressMap.TryGetValue(objectType, out interfaceFromType))
+            {
+                interfaceFromType = objectType.GetTypeInfo().GetInterfaces().FirstOrDefault(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(IProgress<>));
+                TypeToImplementedIProgressMap.Add(objectType, interfaceFromType);
+            }
+        }
+
+        return interfaceFromType;
+    }
+
+    /// <summary>
+    /// Extracts the IAsyncEnumerable{T} interface from a given <see cref="Type"/>, if it is implemented.
+    /// </summary>
+    /// <param name="objectType">The type which may implement IAsyncEnumerable{T}.</param>
+    /// <returns>The <typeparamref name="TInterface"/> type from given <see cref="Type"/> object, or <see langword="null"/>  if no such interface was found in the given <paramref name="objectType" />.</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2070:UnrecognizedReflectionPattern", Justification = "The 'IAsyncEnumerable<>' Type must exist and so trimmer kept it. In which case It also kept it on any type which implements it. The below call to GetInterfaces may return fewer results when trimmed but it will return 'IAsyncEnumerable<>' if the type implemented it, even after trimming.")]
+    internal static Type? FindIAsyncEnumerableInterfaceImplementedBy(Type objectType)
+    {
+        Requires.NotNull(objectType, nameof(objectType));
+
+        if (objectType.IsConstructedGenericType && objectType.GetGenericTypeDefinition().Equals(typeof(IAsyncEnumerable<>)))
+        {
+            return objectType;
+        }
+
+        Type? interfaceFromType;
+        lock (TypeToImplementedIAsyncEnumerableMap)
+        {
+            if (!TypeToImplementedIAsyncEnumerableMap.TryGetValue(objectType, out interfaceFromType))
+            {
+                interfaceFromType = objectType.GetTypeInfo().GetInterfaces().FirstOrDefault(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == typeof(IAsyncEnumerable<>));
+                TypeToImplementedIAsyncEnumerableMap.Add(objectType, interfaceFromType);
+            }
+        }
+
+        return interfaceFromType;
+    }
+}

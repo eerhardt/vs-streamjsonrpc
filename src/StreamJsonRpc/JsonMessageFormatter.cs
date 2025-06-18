@@ -1067,7 +1067,7 @@ public class JsonMessageFormatter : FormatterBase, IJsonRpcAsyncMessageTextForma
                 return null;
             }
 
-            Type? iface = TrackerHelpers<IAsyncEnumerable<int>>.FindInterfaceImplementedBy(objectType);
+            Type? iface = TrackerHelpers.FindIAsyncEnumerableInterfaceImplementedBy(objectType);
             Assumes.NotNull(iface);
             MethodInfo genericMethod = ReadJsonOpenGenericMethod.MakeGenericMethod(iface.GenericTypeArguments[0]);
             try
@@ -1127,7 +1127,7 @@ public class JsonMessageFormatter : FormatterBase, IJsonRpcAsyncMessageTextForma
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            Type? iface = TrackerHelpers<IAsyncEnumerable<int>>.FindInterfaceImplementedBy(value!.GetType());
+            Type? iface = TrackerHelpers.FindIAsyncEnumerableInterfaceImplementedBy(value!.GetType());
             Assumes.NotNull(iface);
             MethodInfo genericMethod = WriteJsonOpenGenericMethod.MakeGenericMethod(iface.GenericTypeArguments[0]);
             try
